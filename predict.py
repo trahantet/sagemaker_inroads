@@ -11,35 +11,25 @@ import mxnet as mx
 
 from utils import format_input, lookup_table, get_lookup_table
 
-def model_fn(job_name = 'inroads-k-means-job-20200824001355', bucket_name = 'inroads-test-bucket1'):
-    """Load the model from the `model_dir` directory."""
+
+def model_fn(model_dir):
+    """Load the PyTorch model from the `model_dir` directory."""
     print("Loading model.")
-    
-    # First, load the model
-    model_key = job_name + '/output/model.tar.gz'
-    boto3.resource('s3').Bucket(bucket_name).download_file(model_key, 'model.tar.gz')
-    
- 
-    os.system('tar -zxvf model.tar.gz')
-    os.system('unzip model_algo-1')
 
-    Kmeans_model_params = mx.ndarray.load('model_algo-1')
-    #cluster_centroids = pd.DataFrame(Kmeans_model_params[0].asnumpy())
-    #cluster_centroids.columns = train_df.columns
-    
-    
     # First, load the parameters used to create the model.
-    model_info = {}
-    model_info_path = os.path.join(model_dir, 'model_info.pth')
-    with open(model_info_path, 'rb') as f:
-        # model_info = torch.load(f) 
-        ### how to load model info specifically for sklearn Kmeans clustering 
+    job_name = 'inroads-k-means-job-20200824001355'
+    model_key = "kmeans/" + job_name + "/output/model.tar.gz"
 
-    print("model_info: {}".format(model_info))
-
-    # Determine the device and construct the model.
+    boto3.resource('s3').Bucket(bucket).download_file(model_key, 'model.tar.gz')
+    os.system('tar -zxvf model.tar.gz')
+    
+    sagemaker_model = MXNetModel(model_data='s3://'+ model_key,
+                             role='arn:aws:iam::accid:sagemaker-role',
+                             entry_point='utils.py')
+    
     print("Done loading model.")
-    return model
+    return sagemaker_model
+
 
 def input_fn(serialized_input_data, content_type):
     print('Deserializing the input data.')
