@@ -29,7 +29,7 @@ def model_fn(model_dir):
     
     
     print("Done loading model.")
-    return predictor
+    return sagemaker_model
 
 
 def input_fn(serialized_input_data, content_type):
