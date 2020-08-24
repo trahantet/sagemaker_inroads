@@ -27,8 +27,9 @@ def model_fn(model_dir):
                              role='arn:aws:iam::accid:sagemaker-role',
                              entry_point='utils.py')
     
+    
     print("Done loading model.")
-    return sagemaker_model
+    return predictor
 
 
 def input_fn(serialized_input_data, content_type):
@@ -52,8 +53,7 @@ def predict_fn(input_data, model):
     formatted_input_data = format_input(input_data)
     vectorised_input = lookup_table(search_table = lookup_table, formatted_input_data)
     
-    output = model.predict(data)
-
-
+    output = sagemaker_model.predict(vectorised_input)
+    
     return result
 
