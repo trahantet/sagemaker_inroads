@@ -14,7 +14,7 @@ from io import StringIO
 import io
 from gensim.models.word2vec import Word2Vec
 
-def get_lookup_table(Key_path = 'data/Vectorized/old_vectorized.csv'):
+def get_lookup_table(Key_path = 'data/Vectorized/combined_vectorized.csv'):
     s3 = boto3.client('s3')
 
     object = s3.get_object(Bucket='inroads-test-bucket1',Key=Key_path)

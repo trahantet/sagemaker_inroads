@@ -6,13 +6,28 @@ import sys
 import sagemaker_containers
 import pandas as pd
 import numpy as np
+import boto3
+import mxnet as mx
 
 from utils import format_input, lookup_table, get_lookup_table
 
-def model_fn(model_dir):
+def model_fn(job_name = 'inroads-k-means-job-20200824001355', bucket_name = 'inroads-test-bucket1'):
     """Load the model from the `model_dir` directory."""
     print("Loading model.")
+    
+    # First, load the model
+    model_key = job_name + '/output/model.tar.gz'
+    boto3.resource('s3').Bucket(bucket_name).download_file(model_key, 'model.tar.gz')
+    
+ 
+    os.system('tar -zxvf model.tar.gz')
+    os.system('unzip model_algo-1')
 
+    Kmeans_model_params = mx.ndarray.load('model_algo-1')
+    #cluster_centroids = pd.DataFrame(Kmeans_model_params[0].asnumpy())
+    #cluster_centroids.columns = train_df.columns
+    
+    
     # First, load the parameters used to create the model.
     model_info = {}
     model_info_path = os.path.join(model_dir, 'model_info.pth')
