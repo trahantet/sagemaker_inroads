@@ -14,7 +14,11 @@ import joblib
 
 from utils import format_input, lookup_table, get_lookup_table
 
+## Import any additional libraries you need to define a model
+from sklearn.cluster import KMeans
 
+    
+# Provided model load function
 def model_fn(model_dir):
     """Load the Sklearn model from the `model_dir` directory."""
     print("Loading model.")
