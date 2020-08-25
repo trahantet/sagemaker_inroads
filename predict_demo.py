@@ -9,6 +9,9 @@ import numpy as np
 import boto3
 import mxnet as mx
 
+from __future__ import print_function
+import joblib
+
 from utils import format_input, lookup_table, get_lookup_table
 
 
@@ -16,16 +19,24 @@ def model_fn(model_dir):
     """Load the Sklearn model from the `model_dir` directory."""
     print("Loading model.")
 
-    # First, load the parameters used to create the model.
-    job_name = 'inroads-k-means-job-20200824001355'
-    model_key = "kmeans/" + job_name + "/output/model.tar.gz"
-
-    boto3.resource('s3').Bucket(bucket).download_file(model_key, 'model.tar.gz')
-    os.system('tar -zxvf model.tar.gz')
+#     # First, load the parameters used to create the model.
+#     job_name = 'inroads-k-means-job-20200824001355'
+#     model_key = "kmeans/" + job_name + "/output/model.tar.gz"
     
-    sagemaker_model = MXNetModel(model_data='s3://'+ model_key,
-                             role='arn:aws:iam::accid:sagemaker-role',
-                             entry_point='utils.py')
+    # Ioana: 25.08.2020
+    # load using joblib
+    # You'll note that this is significantly shorter to write out. 
+    # We will probably have to upgrade this to be able to take from an s3 bucket
+    # but you've already done so below
+    model = joblib.load(os.path.join(model_dir, "kmeans_cluster.joblib"))
+    print("Done loading model.")
+
+#     boto3.resource('s3').Bucket(bucket).download_file(model_key, 'model.tar.gz')
+#     os.system('tar -zxvf model.tar.gz')
+    
+#     sagemaker_model = MXNetModel(model_data='s3://'+ model_key,
+#                              role='arn:aws:iam::accid:sagemaker-role',
+#                              entry_point='utils.py')
     
     
     print("Done loading model.")
