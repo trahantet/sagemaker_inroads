@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     # Read in csv training file
     training_dir = args.data_dir
-    train_data = pd.read_csv(os.path.join(training_dir, "iris_data_test.csv"), header=0, names=None)
+    train_data = pd.read_csv(os.path.join(training_dir, "iris_data_test.csv"), header=0, names=None, index_col=0)
         
 
     ## TODO: Define a model 
