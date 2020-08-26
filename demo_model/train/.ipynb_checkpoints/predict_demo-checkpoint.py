@@ -1,29 +1,25 @@
 from __future__ import print_function
-from utils import format_input, lookup_table, get_lookup_table
-
 import argparse
 import json
 import os
 import pickle
 import sys
-
-#import sagemaker_containers
+import sagemaker_containers
 import pandas as pd
 import numpy as np
 import boto3
-#import mxnet as mx
-
+import mxnet as mx
 
 import joblib
 
-
+from utils import format_input, lookup_table, get_lookup_table
 
 ## Import any additional libraries you need to define a model
 from sklearn.cluster import KMeans
 
     
 # Provided model load function
-def model_fn(model_dir):
+def model_fn(model_dir = 'model/model.tar.gz'):
     """Load the Sklearn model from the `model_dir` directory."""
     print("Loading model.")
 
@@ -38,17 +34,13 @@ def model_fn(model_dir):
     # but you've already done so below
 #     model = joblib.load(os.path.join(model_dir, "kmeans_cluster.joblib"))
 #     print("Done loading model.")
-    bucket_name = 'sagemaker-us-east-1-068949824886'
-    sagemaker_model = boto3.resource('s3').Bucket(bucket_name).download_file(model_dir, 'model.tar.gz')
-#    sagemaker_model = os.system('tar -zxvf model.tar.gz')
-    
-#     sagemaker_model = MXNetModel(model_data='s3://'+ model_key,
-#                              role='arn:aws:iam::accid:sagemaker-role',
-#                              entry_point='utils.py')
-    
+
+     boto3.resource('s3').download_file(bucket_name, model_dir, 'model.tar.gz')
+     sagemaker_model=os.system('tar -zxvf model.tgz')
+        
     
     print("Done loading model.")
-    return sagemaker_model
+    return 
 
 
 # def input_fn(serialized_input_data, content_type):

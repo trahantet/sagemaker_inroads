@@ -11,7 +11,7 @@ import joblib
 from sklearn.cluster import KMeans
 
 
-# Provided model load function
+#Provided model load function
 def model_fn(model_dir):
     """Load model from the model_dir. This is the same model that is saved
     in the main if statement.
@@ -19,7 +19,7 @@ def model_fn(model_dir):
     print("Loading model.")
     
     # load using joblib
-    model = joblib.load(os.path.join(model_dir, "kmeans_cluster.joblib"))
+    model = joblib.load(os.path.join(model_dir, "model.joblib"))
     print("Done loading model.")
     
     return model
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     parser.add_argument('--data-dir', type=str, default=os.environ['SM_CHANNEL_TRAIN'])
     
     ## TODO: Add any additional arguments that you will need to pass into your model
-    parser.add_argument('--n-clusters', type=int, default=3)
+    #parser.add_argument('--n-clusters', type=int, default=3)
 
     
     # args holds all passed-in arguments
@@ -49,12 +49,13 @@ if __name__ == '__main__':
 
     # Read in csv training file
     training_dir = args.data_dir
-    train_data = pd.read_csv(os.path.join(training_dir, "iris_data_test.csv"), header=None, names=None)
+    train_data = pd.read_csv(os.path.join(training_dir, "iris_data_test.csv"), header=0, names=None)
         
 
     ## TODO: Define a model 
     model = KMeans(
-            n_estimators=args.n_clusters,
+            n_clusters = 4
+            #n_clusters=args.n_clusters,
             )
     
     
